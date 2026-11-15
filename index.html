@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boba Match</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFF3DC; --ink:#161616; --white:#fff;
+  --red:#FF5C5C; --yellow:#FFD84D; --teal:#3ECFC0; --purple:#9D7BFF; --pink:#FFC9C2;
+  --bw:3px; --sh:5px 5px 0 var(--ink); --r:14px;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--cream); color:var(--ink);
+  font-family:"Space Grotesk","Noto Sans TC","Microsoft JhengHei","Noto Sans Thai","Leelawadee UI","Yu Gothic UI","Malgun Gothic",system-ui,sans-serif;
+  font-weight:500; line-height:1.5; min-height:100vh; overflow-x:hidden;
+}
+button,select{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--purple);outline-offset:3px}
+
+/* decoration */
+.deco{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.deco i{position:absolute;border:var(--bw) solid var(--ink)}
+.deco i:nth-child(1){width:260px;height:260px;background:var(--yellow);right:-90px;top:-90px;border-radius:0 0 0 60px}
+.deco i:nth-child(2){width:220px;height:220px;background:var(--pink);left:-80px;bottom:-80px;border-radius:0 60px 0 0}
+.deco i:nth-child(3){width:22px;height:22px;background:var(--teal);left:9%;top:24%;transform:rotate(18deg)}
+.deco i:nth-child(4){width:18px;height:18px;background:var(--purple);right:12%;top:46%;transform:rotate(-14deg)}
+.deco i:nth-child(5){width:20px;height:20px;background:var(--red);right:22%;bottom:14%;border-radius:50%}
+
+/* header / footer */
+header{position:sticky;top:0;z-index:5;background:var(--cream);border-bottom:var(--bw) solid var(--ink);
+  display:flex;align-items:center;gap:10px;padding:10px 16px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;background:none;border:0;padding:4px;margin-right:auto}
+.logo span{display:grid;place-items:center;width:34px;height:34px;background:var(--red);border:var(--bw) solid var(--ink);border-radius:9px;box-shadow:3px 3px 0 var(--ink)}
+.logo span::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--ink)}
+.pill{border:var(--bw) solid var(--ink);border-radius:999px;background:var(--white);padding:6px 14px;font-weight:700;font-size:14px;box-shadow:3px 3px 0 var(--ink)}
+.pill:active{transform:translate(3px,3px);box-shadow:none}
+select.pill{appearance:none;padding-right:30px;background:var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23161616' stroke-width='2.5'/%3E%3C/svg%3E") no-repeat right 11px center}
+footer{position:relative;z-index:1;border-top:var(--bw) solid var(--ink);padding:18px 16px 110px;display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;font-size:14px}
+footer a{color:inherit}
+
+main{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:28px 16px 48px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:var(--bw) solid var(--ink);border-radius:var(--r);
+  box-shadow:var(--sh);padding:14px 22px;font-weight:700;font-size:18px;background:var(--white);transition:transform .08s,box-shadow .08s;text-decoration:none;color:var(--ink)}
+.btn:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--ink)}
+.btn:active{transform:translate(5px,5px);box-shadow:none}
+.red{background:var(--red)}.yellow{background:var(--yellow)}.teal{background:var(--teal)}.purple{background:var(--purple)}.pink{background:var(--pink)}
+.ghost{box-shadow:none;background:transparent;border-color:transparent;text-decoration:underline;font-size:16px;padding:10px}
+.ghost:hover{transform:none;box-shadow:none}
+
+/* intro */
+.intro{text-align:center;padding-top:8px}
+.intro svg{width:150px;height:auto;margin-bottom:10px}
+h1{font-size:clamp(32px,8vw,52px);line-height:1.12;font-weight:700;letter-spacing:-.02em;text-wrap:balance}
+.intro p{font-size:18px;margin:14px auto 22px;max-width:30em}
+.langs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:26px}
+.langs .pill[aria-pressed=true]{background:var(--ink);color:var(--cream)}
+.intro .btn{font-size:22px;padding:16px 40px}
+
+/* quiz */
+.prog{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:18px}
+.prog span{height:14px;border:var(--bw) solid var(--ink);border-radius:5px;background:var(--white)}
+.prog span.done{background:var(--teal)}.prog span.now{background:var(--yellow)}
+.count{font-weight:700;font-size:14px;letter-spacing:.08em}
+h2{font-size:clamp(26px,6vw,36px);line-height:1.2;font-weight:700;margin:4px 0 22px;text-wrap:balance}
+.opts{display:grid;gap:14px}
+.opt{justify-content:flex-start;text-align:left;width:100%;font-size:19px;padding:16px 18px}
+.opt b{display:grid;place-items:center;flex:none;width:30px;height:30px;border:var(--bw) solid var(--ink);border-radius:8px;background:var(--white);font-size:14px}
+.opt.on{background:var(--ink);color:var(--cream)}
+.opt.on b{color:var(--ink)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}
+
+/* result */
+.panel{border:var(--bw) solid var(--ink);border-radius:20px;box-shadow:var(--sh);background:var(--white);padding:22px;margin-bottom:28px}
+.tag{display:inline-block;border:var(--bw) solid var(--ink);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:700;background:var(--white);margin-bottom:12px}
+.hero{background:var(--yellow)}
+.hero .zh{font-size:clamp(40px,11vw,64px);font-weight:700;line-height:1.1}
+.py{font-size:18px;font-style:italic}
+.hero .en{font-size:20px;font-weight:700;margin-top:2px}
+.hero .why{margin-top:14px;padding-top:14px;border-top:var(--bw) solid var(--ink);font-size:17px}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.badges span{background:var(--teal);border:2px solid var(--ink);border-radius:999px;padding:1px 10px;font-size:13px;font-weight:700}
+.banner{background:var(--purple);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;font-weight:700;font-size:18px}
+h3{font-size:24px;font-weight:700;margin-bottom:14px}
+.alts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.alts>div{border:var(--bw) solid var(--ink);border-radius:var(--r);padding:12px;background:var(--pink)}
+.alts>div:last-child{background:var(--teal)}
+.alts .zh{font-size:22px;font-weight:700;line-height:1.2}
+.alts small{display:block;font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips .pill{font-weight:500}
+.hint{font-size:14px;margin-bottom:10px}
+
+.card{background:var(--red);transform:rotate(-1deg)}
+.card .inner{background:var(--white);border:var(--bw) solid var(--ink);border-radius:var(--r);padding:16px}
+.card .say{font-size:clamp(22px,5.6vw,30px);font-weight:700;line-height:1.35}
+.card .py{font-size:15px;margin-top:6px}
+.card dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin-top:14px;padding-top:14px;border-top:2px dashed var(--ink);font-size:16px}
+.card dt{font-weight:700;font-size:20px}
+.card dd{align-self:center}
+.card .btn{margin-top:14px;font-size:16px;padding:10px 16px}
+
+.modal{position:fixed;inset:0;z-index:20;background:rgba(22,22,22,.6);display:grid;place-items:center;padding:16px;overflow:auto}
+.modal .panel{margin:0;max-width:420px;text-align:center}
+.modal img{display:block;width:100%;height:auto;border:var(--bw) solid var(--ink);border-radius:var(--r);margin-bottom:12px}
+.modal .btn{font-size:16px;padding:10px 24px}
+.blist{list-style:none;padding:0;display:grid;gap:12px}
+.blist li{display:flex;gap:12px;border:var(--bw) solid var(--ink);border-radius:var(--r);padding:12px;box-shadow:3px 3px 0 var(--ink)}
+.blist li.red{background:var(--pink)}.blist li.purple{background:#D9CCFF}.blist li.teal{background:#B5F0E8}.blist li.yellow{background:#FFEFA8}.blist li.pink{background:#FFD9CC}
+.blist li>b{display:grid;place-items:center;flex:none;width:32px;height:32px;background:var(--white);border:var(--bw) solid var(--ink);border-radius:50%}
+.blist .zh{font-size:22px;font-weight:700;line-height:1.2}
+.blist .py{font-size:14px;font-style:italic}
+.blist p{font-size:15px;margin:6px 0 10px}
+.blist .pill{display:inline-block;text-decoration:none;color:var(--ink);font-size:13px}
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:22px;list-style:none;padding:0}
+.steps li{border:var(--bw) solid var(--ink);border-radius:var(--r);padding:12px;font-weight:700;display:flex;gap:10px;align-items:center}
+.steps li:nth-child(1){background:var(--red)}.steps li:nth-child(2){background:var(--purple)}.steps li:nth-child(3){background:var(--teal)}.steps li:nth-child(4){background:var(--yellow)}
+.steps b{display:grid;place-items:center;flex:none;width:30px;height:30px;background:var(--white);border:var(--bw) solid var(--ink);border-radius:50%}
+table{width:100%;border-collapse:collapse;margin-bottom:8px}
+td{padding:9px 6px;border-bottom:2px solid var(--ink);vertical-align:middle;font-size:15px}
+td:first-child{font-size:20px;font-weight:700;white-space:nowrap}
+td:first-child small{display:block;font-size:12px;font-weight:500;font-style:italic}
+.bar{height:14px;width:90px;border:2px solid var(--ink);border-radius:999px;background:var(--white);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--red);border-right:2px solid var(--ink)}
+.note{background:var(--yellow);border:var(--bw) solid var(--ink);border-radius:var(--r);padding:10px 14px;font-size:15px;margin:10px 0 22px}
+h4{font-size:17px;font-weight:700;margin:6px 0 2px}
+.shops{display:grid;gap:12px;margin-bottom:18px}
+.shops p{border:var(--bw) solid var(--ink);border-radius:var(--r);padding:14px;background:var(--pink)}
+.shops p:last-child{background:var(--teal)}
+
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--cream);border-top:var(--bw) solid var(--ink);padding:10px 16px}
+.sticky div{max-width:608px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr;gap:12px}
+.sticky .btn{padding:12px;font-size:17px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:9;background:var(--ink);color:var(--cream);padding:10px 18px;border-radius:999px;font-weight:700}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="deco" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+<header>
+  <button class="logo" data-act="home"><span></span>Boba Match</button>
+  <button class="pill" id="retake" data-act="retake" hidden></button>
+  <select class="pill" id="lang" aria-label="Language"></select>
+</header>
+<main id="app"></main>
+<footer id="foot"></footer>
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true">
+  <div class="panel"><img id="cardimg" alt="Order card"><p class="hint" id="savehint"></p><button class="btn red" data-act="close" id="closebtn">×</button></div>
+</div>
+
+<script>
+const L={
+zh:{n:"中文",tag:"找到你的命定珍奶",sub:"回答 7 個問題,拿到一張可以直接出示給店員的點餐小卡。",start:"開始",back:"上一題",next:"看結果",resT:"你的推薦",alt:"也可以試試",
+ why:["茶的咖啡因,溫和提神。","無咖啡因、口味溫潤,適合慢下來。","濃郁奢華,這是你應得的。","在地人愛喝、觀光客常錯過的口味。"],
+ card:"把這張給店員看",say:"聽發音",share:"分享",dl:"儲存小卡",adj:"點選即可修改答案",howT:"怎麼點餐",steps:["選飲料","選大小","選甜度","選冰塊"],
+ hint:"第一次建議點半糖。全糖的甜度約等於可樂。",topT:"配料",tex:["Q 彈,帶黑糖香","脆彈清爽","滑順的雞蛋布丁","軟嫩草本凍,微苦"],
+ whereT:"去哪喝",chain:"連鎖店:幾乎每條街都有,品質穩定,多半有圖片菜單。",indie:"獨立店:有自家配方與季節限定,常只收現金。",map:"找附近的店",
+ friend:"朋友的推薦",mine:"測測我的",copied:"已複製連結",retake:"重新測驗",foot:["關於","聯絡","社群","隱私權"],
+ qs:["你喝過珍珠奶茶嗎?","現在的心情是?","外面天氣如何?","想喝冰的還是熱的?","甜度要多少?","要加什麼料?","有飲食限制嗎?(可複選)"],
+ os:[["第一次喝","喝過幾次","常喝"],["需要提神","想放鬆","犒賞自己","想嘗鮮"],["炎熱","舒適","寒冷","下雨"],["冰","去冰","溫","熱"],["全糖","少糖","半糖","微糖","無糖"],["珍珠","椰果","布丁","仙草","不加料"],["乳糖不耐","素食","低咖啡因"]]},
+en:{n:"English",tag:"Find your perfect bubble tea",sub:"Answer 7 quick questions and get an order card you can show to the staff.",start:"Start",back:"Back",next:"See my match",resT:"Your match",alt:"Also try",
+ why:["Tea caffeine for a gentle lift.","Caffeine-free and mellow — made for slowing down.","Rich and indulgent. You earned it.","A local favourite most visitors miss."],
+ card:"Show this to the staff",say:"Listen",share:"Share",dl:"Save card",adj:"Tap to change an answer",howT:"How to order",steps:["Pick a drink","Choose a size","Set sweetness","Set ice level"],
+ hint:"Half sugar is a safe first pick. Full sugar is about as sweet as cola.",topT:"Toppings",tex:["Chewy, brown-sugar sweet","Firm and bouncy, light","Silky egg custard","Soft herbal jelly, slightly bitter"],
+ whereT:"Where to get one",chain:"Chain shops — on almost every street, consistent, usually with picture menus.",indie:"Independent shops — house recipes and seasonal specials, often cash only.",map:"Find shops near me",
+ friend:"Your friend's match",mine:"Find mine",copied:"Link copied",retake:"Retake",foot:["About","Contact","Social","Privacy"],
+ qs:["Have you had bubble tea before?","How are you feeling right now?","What's the weather like?","Cold or hot?","How sweet?","Which topping?","Any dietary needs? (pick any)"],
+ os:[["First time","A few times","Regular"],["Need energy","Want to relax","Treat myself","Try something new"],["Hot","Mild","Cold","Rainy"],["Iced","No ice","Warm","Hot"],["Full sugar","Less sugar","Half sugar","Light sugar","No sugar"],["Tapioca pearls","Coconut jelly","Pudding","Grass jelly","No topping"],["Lactose-free","Vegan","Low caffeine"]]},
+vi:{n:"Tiếng Việt",tag:"Tìm ly trà sữa dành cho bạn",sub:"Trả lời 7 câu hỏi và nhận thẻ gọi món để đưa cho nhân viên.",start:"Bắt đầu",back:"Quay lại",next:"Xem kết quả",resT:"Gợi ý cho bạn",alt:"Thử thêm",
+ why:["Caffeine từ trà giúp tỉnh táo nhẹ nhàng.","Không caffeine, vị dịu — hợp để thư giãn.","Đậm đà, béo ngậy. Bạn xứng đáng.","Món người bản địa yêu thích mà du khách hay bỏ lỡ."],
+ card:"Đưa thẻ này cho nhân viên",say:"Nghe phát âm",share:"Chia sẻ",dl:"Lưu thẻ",adj:"Chạm để đổi câu trả lời",howT:"Cách gọi món",steps:["Chọn đồ uống","Chọn cỡ ly","Chọn độ ngọt","Chọn lượng đá"],
+ hint:"Lần đầu nên chọn 50% đường. 100% đường ngọt gần bằng nước ngọt có ga.",topT:"Topping",tex:["Dai, thơm đường nâu","Giòn dai, thanh mát","Pudding trứng mềm mịn","Thạch thảo mộc mềm, hơi đắng"],
+ whereT:"Uống ở đâu",chain:"Chuỗi cửa hàng — có ở hầu hết các con phố, chất lượng ổn định, thường có menu hình.",indie:"Quán độc lập — công thức riêng, món theo mùa, thường chỉ nhận tiền mặt.",map:"Tìm quán gần tôi",
+ friend:"Gợi ý của bạn bè",mine:"Tìm ly của tôi",copied:"Đã sao chép liên kết",retake:"Làm lại",foot:["Giới thiệu","Liên hệ","Mạng xã hội","Quyền riêng tư"],
+ qs:["Bạn đã từng uống trà sữa trân châu chưa?","Tâm trạng bạn lúc này?","Thời tiết bên ngoài thế nào?","Bạn muốn uống lạnh hay nóng?","Độ ngọt bao nhiêu?","Thêm topping gì?","Bạn có hạn chế ăn uống không? (chọn nhiều)"],
+ os:[["Lần đầu","Vài lần","Thường xuyên"],["Cần tỉnh táo","Muốn thư giãn","Tự thưởng","Thử món mới"],["Nóng","Dễ chịu","Lạnh","Mưa"],["Có đá","Không đá","Ấm","Nóng"],["100% đường","70% đường","50% đường","30% đường","Không đường"],["Trân châu","Thạch dừa","Pudding","Sương sáo","Không topping"],["Không lactose","Thuần chay","Ít caffeine"]]},
+th:{n:"ไทย",tag:"ค้นหาชานมไข่มุกที่ใช่สำหรับคุณ",sub:"ตอบ 7 คำถาม แล้วรับการ์ดสั่งเครื่องดื่มไว้โชว์ให้พนักงานดู",start:"เริ่มเลย",back:"ย้อนกลับ",next:"ดูผลลัพธ์",resT:"เมนูที่เหมาะกับคุณ",alt:"ลองเมนูนี้ด้วย",
+ why:["คาเฟอีนจากชาช่วยให้สดชื่นแบบเบา ๆ","ไม่มีคาเฟอีน รสนุ่มละมุน เหมาะกับการพักผ่อน","เข้มข้น หอมมัน คุณสมควรได้รับ","เมนูโปรดของคนท้องถิ่นที่นักท่องเที่ยวมักพลาด"],
+ card:"โชว์การ์ดนี้ให้พนักงาน",say:"ฟังเสียง",share:"แชร์",dl:"บันทึกการ์ด",adj:"แตะเพื่อเปลี่ยนคำตอบ",howT:"วิธีสั่ง",steps:["เลือกเครื่องดื่ม","เลือกขนาด","เลือกความหวาน","เลือกน้ำแข็ง"],
+ hint:"ครั้งแรกแนะนำหวานครึ่ง หวานปกติจะหวานพอ ๆ กับน้ำอัดลม",topT:"ท็อปปิ้ง",tex:["หนึบ หอมน้ำตาลทรายแดง","กรุบเด้ง สดชื่น","พุดดิ้งไข่เนื้อเนียน","เยลลี่สมุนไพรนุ่ม ขมนิด ๆ"],
+ whereT:"ดื่มได้ที่ไหน",chain:"ร้านเชน — มีแทบทุกถนน คุณภาพสม่ำเสมอ มักมีเมนูรูปภาพ",indie:"ร้านอิสระ — สูตรเฉพาะร้านและเมนูตามฤดูกาล มักรับเงินสดเท่านั้น",map:"หาร้านใกล้ฉัน",
+ friend:"เมนูของเพื่อนคุณ",mine:"หาเมนูของฉัน",copied:"คัดลอกลิงก์แล้ว",retake:"ทำใหม่",foot:["เกี่ยวกับ","ติดต่อ","โซเชียล","ความเป็นส่วนตัว"],
+ qs:["เคยดื่มชานมไข่มุกไหม?","ตอนนี้อารมณ์เป็นอย่างไร?","อากาศข้างนอกเป็นอย่างไร?","อยากดื่มเย็นหรือร้อน?","หวานแค่ไหน?","ใส่ท็อปปิ้งอะไรดี?","มีข้อจำกัดด้านอาหารไหม? (เลือกได้หลายข้อ)"],
+ os:[["ครั้งแรก","เคยไม่กี่ครั้ง","ดื่มประจำ"],["อยากสดชื่น","อยากผ่อนคลาย","ให้รางวัลตัวเอง","ลองของใหม่"],["ร้อน","สบาย","หนาว","ฝนตก"],["ใส่น้ำแข็ง","ไม่ใส่น้ำแข็ง","อุ่น","ร้อน"],["หวานปกติ","หวานน้อย","หวานครึ่ง","หวานนิดเดียว","ไม่หวาน"],["ไข่มุก","วุ้นมะพร้าว","พุดดิ้ง","เฉาก๊วย","ไม่ใส่"],["แพ้แลคโตส","วีแกน","คาเฟอีนต่ำ"]]},
+ja:{n:"日本語",tag:"あなたにぴったりのタピオカを見つけよう",sub:"7つの質問に答えると、店員さんに見せるだけの注文カードができます。",start:"スタート",back:"戻る",next:"結果を見る",resT:"あなたへのおすすめ",alt:"こちらもおすすめ",
+ why:["お茶のカフェインでやさしくリフレッシュ。","ノンカフェインでまろやか。ゆっくりしたい時に。","濃厚でぜいたく。自分へのご褒美に。","地元で人気、旅行者が見逃しがちな一杯。"],
+ card:"このカードを店員さんに見せてください",say:"発音を聞く",share:"シェア",dl:"カードを保存",adj:"タップして回答を変更",howT:"注文のしかた",steps:["ドリンクを選ぶ","サイズを選ぶ","甘さを選ぶ","氷の量を選ぶ"],
+ hint:"初めてなら甘さ50%がおすすめ。100%はコーラくらいの甘さです。",topT:"トッピング",tex:["もちもち、黒糖の香り","コリコリでさっぱり","なめらかな卵プリン","やわらかいハーブゼリー、ほんのり苦い"],
+ whereT:"どこで飲める?",chain:"チェーン店 — ほぼどの通りにもあり、味が安定。写真付きメニューが多い。",indie:"個人店 — 独自レシピや季節限定あり。現金のみの店が多い。",map:"近くの店を探す",
+ friend:"友だちのおすすめ",mine:"自分も診断する",copied:"リンクをコピーしました",retake:"もう一度",foot:["サイトについて","お問い合わせ","SNS","プライバシー"],
+ qs:["タピオカミルクティーを飲んだことは?","今の気分は?","外の天気は?","冷たい?温かい?","甘さはどのくらい?","トッピングは?","食事制限はありますか?(複数選択可)"],
+ os:[["初めて","数回ある","よく飲む"],["元気を出したい","リラックスしたい","自分へのご褒美","新しい味を試したい"],["暑い","快適","寒い","雨"],["氷あり","氷なし","ぬるめ","ホット"],["甘さ100%","甘さ70%","甘さ50%","甘さ30%","無糖"],["タピオカ","ナタデココ","プリン","仙草ゼリー","なし"],["乳糖不耐症","ヴィーガン","低カフェイン"]]},
+ko:{n:"한국어",tag:"나에게 딱 맞는 버블티 찾기",sub:"7가지 질문에 답하면 직원에게 보여줄 주문 카드를 드려요.",start:"시작하기",back:"이전",next:"결과 보기",resT:"당신을 위한 추천",alt:"이것도 추천해요",
+ why:["차의 카페인으로 부드럽게 기운을 채워요.","카페인 없이 순한 맛, 쉬어가기 좋아요.","진하고 풍부한 맛. 오늘은 그럴 자격 있어요.","현지인은 좋아하지만 여행자는 놓치기 쉬운 메뉴."],
+ card:"이 카드를 직원에게 보여주세요",say:"발음 듣기",share:"공유",dl:"카드 저장",adj:"눌러서 답변 변경",howT:"주문 방법",steps:["음료 선택","사이즈 선택","당도 선택","얼음 선택"],
+ hint:"처음이라면 당도 50%를 추천해요. 100%는 콜라 정도로 달아요.",topT:"토핑",tex:["쫄깃하고 흑당 향","탱글하고 깔끔함","부드러운 에그 푸딩","말랑한 허브 젤리, 살짝 쌉쌀"],
+ whereT:"어디서 마실까",chain:"체인점 — 거의 모든 거리에 있고 맛이 일정하며 사진 메뉴가 많아요.",indie:"개인 매장 — 자체 레시피와 시즌 메뉴, 현금만 받는 곳이 많아요.",map:"근처 매장 찾기",
+ friend:"친구의 추천",mine:"나도 해보기",copied:"링크 복사됨",retake:"다시 하기",foot:["소개","문의","소셜","개인정보"],
+ qs:["버블티를 마셔본 적 있나요?","지금 기분은?","바깥 날씨는?","차갑게? 따뜻하게?","당도는 얼마나?","토핑은 무엇으로?","식이 제한이 있나요? (복수 선택)"],
+ os:[["처음이에요","몇 번 마셔봤어요","자주 마셔요"],["기운이 필요해요","쉬고 싶어요","나에게 주는 선물","새로운 맛 도전"],["더워요","쾌적해요","추워요","비 와요"],["얼음 있음","얼음 없음","미지근하게","따뜻하게"],["당도 100%","당도 70%","당도 50%","당도 30%","무설탕"],["타피오카 펄","코코넛 젤리","푸딩","선초 젤리","토핑 없음"],["유당불내증","비건","저카페인"]]}
+};
+
+// Chinese ordering vocabulary (always shown in Chinese + pinyin)
+const ZH={
+ sweet:["全糖","少糖","半糖","微糖","無糖"],sweetPy:["quán táng","shǎo táng","bàn táng","wēi táng","wú táng"],pct:[100,70,50,30,0],
+ ice:["正常冰","去冰","溫的","熱的"],icePy:["zhèngcháng bīng","qù bīng","wēn de","rè de"],
+ top:["珍珠","椰果","布丁","仙草"],topPy:["zhēnzhū","yēguǒ","bùdīng","xiāncǎo"]
+};
+// d=dairy c=caffeine v=vegan h=can be hot, only=hot only
+const DRINKS=[
+ {zh:"奶茶",py:"Nǎichá",en:"Classic Milk Tea",d:1,c:1,v:0,h:1,rich:1,fresh:0,adv:0,cls:1},
+ {zh:"黑糖鮮奶",py:"Hēitáng xiānnǎi",en:"Brown Sugar Fresh Milk",d:1,c:0,v:0,h:1,rich:2,fresh:0,adv:0,cls:.5},
+ {zh:"芋頭鮮奶",py:"Yùtou xiānnǎi",en:"Taro Fresh Milk",d:1,c:0,v:0,h:1,rich:2,fresh:0,adv:1,cls:0},
+ {zh:"百香綠茶",py:"Bǎixiāng lǜchá",en:"Passion Fruit Green Tea",d:0,c:1,v:1,h:0,rich:0,fresh:2,adv:0,cls:.5},
+ {zh:"冬瓜檸檬",py:"Dōngguā níngméng",en:"Winter Melon Lemonade",d:0,c:0,v:1,h:0,rich:0,fresh:2,adv:2,cls:0},
+ {zh:"烏龍奶茶",py:"Wūlóng nǎichá",en:"Oolong Milk Tea",d:1,c:1,v:0,h:1,rich:1,fresh:0,adv:1,cls:0},
+ {zh:"燕麥奶茶",py:"Yànmài nǎichá",en:"Oat Milk Tea",d:0,c:1,v:1,h:1,rich:1,fresh:0,adv:0,cls:.5},
+ {zh:"桂圓紅棗茶",py:"Guìyuán hóngzǎo chá",en:"Longan & Red Date Tea",d:0,c:0,v:1,h:1,only:1,rich:1,fresh:0,adv:2,cls:0},
+ {zh:"檸檬愛玉",py:"Níngméng àiyù",en:"Lemon Aiyu Jelly Drink",d:0,c:0,v:1,h:0,rich:0,fresh:2,adv:2,cls:0}
+];
+const BR={
+ title:{zh:"推薦品牌",en:"Where to try it",vi:"Thương hiệu gợi ý",th:"แบรนด์แนะนำ",ja:"おすすめブランド",ko:"추천 브랜드"},
+ lead:{zh:"想喝這一類飲品,可以從這些品牌開始:",en:"Good places to start for this kind of drink:",vi:"Những thương hiệu nên thử cho loại đồ uống này:",th:"แบรนด์ที่เหมาะกับเครื่องดื่มประเภทนี้:",ja:"この系統のドリンクなら、まずはこちらのブランドから:",ko:"이런 음료라면 이 브랜드들부터 시작해 보세요:"},
+ note:{zh:"菜單與供應品項依分店而異,以現場為準。",en:"Menus vary by shop — check on site.",vi:"Thực đơn khác nhau tùy chi nhánh, vui lòng xem tại quán.",th:"เมนูแตกต่างกันตามสาขา โปรดตรวจสอบที่ร้าน",ja:"メニューは店舗により異なります。現地でご確認ください。",ko:"메뉴는 매장마다 다르니 현장에서 확인하세요."},
+ map:{zh:"在地圖上找",en:"Find on map",vi:"Tìm trên bản đồ",th:"ค้นหาในแผนที่",ja:"地図で探す",ko:"지도에서 찾기"},
+ list:[
+  {zh:"春水堂",py:"Chūnshuǐtáng",en:"Chun Shui Tang",d:{zh:"茶館風格、可坐下來慢慢喝;常被視為珍珠奶茶起源故事的代表之一。",en:"Teahouse style, good for sitting down. Often cited in the origin story of pearl milk tea.",vi:"Phong cách trà quán, có chỗ ngồi thư thả. Thường được nhắc đến trong câu chuyện khởi nguồn của trà sữa trân châu.",th:"บรรยากาศแบบร้านน้ำชา นั่งจิบได้สบาย มักถูกกล่าวถึงในเรื่องราวต้นกำเนิดชานมไข่มุก",ja:"ティーハウス風で座ってゆっくり飲める。タピオカミルクティー発祥の話でよく名前が挙がる。",ko:"티하우스 스타일로 앉아서 즐기기 좋아요. 버블티 기원 이야기에 자주 언급돼요."}},
+  {zh:"50嵐",py:"Wǔshí lán",en:"50 Lan",d:{zh:"街邊常見的平價手搖店,菜單簡單、客製選項清楚,適合第一次點餐。",en:"Common street-side shop with affordable drinks and a simple, clear menu — good for a first order.",vi:"Quán bình dân ngoài phố, thực đơn đơn giản, dễ tùy chỉnh — hợp cho lần gọi món đầu tiên.",th:"ร้านราคาเป็นกันเองที่พบได้ตามถนน เมนูเข้าใจง่าย เหมาะกับการสั่งครั้งแรก",ja:"街角で見かける手頃な店。メニューがシンプルで、初めての注文に向く。",ko:"길거리에서 흔히 보이는 합리적인 가격의 매장. 메뉴가 단순해 첫 주문에 좋아요."}},
+  {zh:"CoCo都可",py:"CoCo dūkě",en:"CoCo Fresh Tea & Juice",d:{zh:"海外分店多、容易找到,菜單附圖片,語言不通時也好點。",en:"Many branches, including overseas, and picture menus that make ordering easy without Chinese.",vi:"Nhiều chi nhánh, kể cả ở nước ngoài; menu có hình nên dễ gọi khi không biết tiếng Trung.",th:"มีสาขาจำนวนมาก รวมถึงต่างประเทศ เมนูมีรูปภาพ สั่งง่ายแม้ไม่รู้ภาษาจีน",ja:"海外にも店舗が多く見つけやすい。写真付きメニューで中国語が分からなくても注文しやすい。",ko:"해외 지점도 많아 찾기 쉽고, 사진 메뉴가 있어 중국어를 몰라도 주문하기 편해요."}},
+  {zh:"迷客夏",py:"Míkèxià",en:"Milksha",d:{zh:"以鮮奶茶飲見長,奶香明顯,適合喜歡濃郁口感的人。",en:"Known for fresh-milk drinks with a clear milky richness.",vi:"Nổi tiếng với các món sữa tươi, vị sữa đậm — hợp người thích vị béo.",th:"โดดเด่นเรื่องเครื่องดื่มนมสด รสนมชัดเจน เหมาะกับคนชอบความเข้มข้น",ja:"生乳を使ったドリンクが得意で、ミルク感がしっかり。濃厚な味が好きな人向け。",ko:"생우유 음료가 강점이며 우유 향이 진해요. 진한 맛을 좋아하는 분께 추천."}},
+  {zh:"可不可熟成紅茶",py:"Kěbùkě shúchéng hóngchá",en:"KEBUKE",d:{zh:"主打熟成紅茶,茶味明顯,想喝茶感多於甜感可以選這家。",en:"Focuses on aged black tea — pick it if you want more tea flavour and less sweetness.",vi:"Tập trung vào hồng trà ủ, vị trà rõ — hợp nếu bạn thích vị trà hơn vị ngọt.",th:"เน้นชาดำบ่ม รสชาติชาชัด เหมาะกับคนที่อยากได้รสชามากกว่าความหวาน",ja:"熟成紅茶が看板で、茶の風味がしっかり。甘さより茶の味を楽しみたい人向け。",ko:"숙성 홍차가 주력으로 차 맛이 뚜렷해요. 단맛보다 차 맛을 원할 때 좋아요."}}
+ ]
+};
+const COLORS=["red","purple","teal","yellow","pink"];
+const BASE=""; // public page address used for share links; empty = current address
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const $=s=>document.querySelector(s);
+
+const S={lang:"en",view:"intro",q:0,a:[null,null,null,null,null,null],diet:[],edit:false,shared:false};
+const nav=(navigator.language||"en").slice(0,2).toLowerCase();
+S.lang=L[store.get("lang")]?store.get("lang"):(L[nav]?nav:"en");
+
+// shared link: #s=012345.01
+(function(){
+  const m=location.hash.match(/^#(?:s=|r-)(\d{6})[.-]([0-2]*)$/);
+  if(!m)return;
+  const a=[...m[1]].map(Number),t=L.en.os;
+  if(a.every((v,i)=>v<t[i].length)){S.a=a;S.diet=[...new Set([...m[2]].map(Number))];S.view="result";S.shared=true}
+})();
+
+function pick(){
+  const [e,m,w,tmp]=S.a,hot=tmp>=2;
+  return DRINKS.map((d,id)=>({...d,id}))
+   .filter(d=>!(S.diet.includes(0)&&d.d)&&!(S.diet.includes(1)&&!d.v)&&!(S.diet.includes(2)&&d.c))
+   .map(d=>{
+     let s=0;
+     if(e===0)s+=d.cls*3; if(e===2)s+=d.adv;
+     if(m===0)s+=d.c*2; if(m===1)s+=(1-d.c)*2; if(m===2)s+=d.rich*1.5; if(m===3)s+=d.adv*2;
+     if(w===0)s+=d.fresh*1.5; if(w===2)s+=d.h+d.rich*.5; if(w===3)s+=d.h*.5;
+     if(hot)s+=d.h?1:-5; else if(d.only)s-=5;
+     return {...d,s};
+   }).sort((x,y)=>y.s-x.s).slice(0,3);
+}
+function nameOf(d){return d.id===0&&S.a[5]===0?{zh:"珍珠奶茶",py:"Zhēnzhū nǎichá",en:"Bubble Milk Tea"}:d}
+function order(d){
+  const n=nameOf(d),t=S.a[5],hasTop=t<4&&!(d.id===0&&t===0);
+  const zh=[n.zh,ZH.sweet[S.a[4]],ZH.ice[S.a[3]]],py=[n.py,ZH.sweetPy[S.a[4]],ZH.icePy[S.a[3]]];
+  if(hasTop){zh.push("加"+ZH.top[t]);py.push("jiā "+ZH.topPy[t])}
+  return {n,hasTop,say:"我要一杯"+zh.join(","),py:"Wǒ yào yì bēi "+py.join(", ")};
+}
+const local=n=>S.lang==="zh"?"":n.en;
+
+const CUP=`<svg viewBox="0 0 200 240" aria-hidden="true"><g stroke="#161616" stroke-width="7" stroke-linejoin="round">
+<rect x="112" y="8" width="20" height="150" rx="4" fill="#FF5C5C" transform="rotate(12 122 80)"/>
+<path d="M42 78h116l-14 142H56z" fill="#FFD84D"/><path d="M47 128h106l-9 92H56z" fill="#FFC9C2"/>
+<rect x="30" y="58" width="140" height="24" rx="8" fill="#3ECFC0"/></g>
+<g fill="#161616"><circle cx="78" cy="198" r="10"/><circle cx="102" cy="204" r="10"/><circle cx="126" cy="196" r="10"/><circle cx="90" cy="178" r="10"/><circle cx="114" cy="180" r="10"/></g></svg>`;
+
+function render(){
+  const t=L[S.lang];document.documentElement.lang=S.lang==="zh"?"zh-Hant":S.lang;
+  $("#retake").textContent=t.retake;$("#retake").hidden=S.view!=="result";
+  $("#lang").innerHTML=Object.keys(L).map(k=>`<option value="${k}"${k===S.lang?" selected":""}>${L[k].n}</option>`).join("");
+  $("#foot").innerHTML="<span>© Boba Match</span>"+t.foot.map(f=>`<a href="#">${f}</a>`).join("");
+  $("#app").innerHTML=S.view==="intro"?intro(t):S.view==="quiz"?quiz(t):result(t);
+}
+function intro(t){return `<section class="intro">${CUP}<h1>${t.tag}</h1><p>${t.sub}</p>
+ <div class="langs">${Object.keys(L).map(k=>`<button class="pill" data-lang="${k}" aria-pressed="${k===S.lang}">${L[k].n}</button>`).join("")}</div>
+ <button class="btn red" data-act="start">${t.start} →</button></section>`}
+function quiz(t){
+  const q=S.q,multi=q===6;
+  return `<div class="prog" aria-hidden="true">${t.qs.map((_,i)=>`<span class="${i<q?"done":i===q?"now":""}"></span>`).join("")}</div>
+  <p class="count">0${q+1} / 07</p><h2>${t.qs[q]}</h2>
+  <div class="opts">${t.os[q].map((o,i)=>{const on=multi?S.diet.includes(i):S.a[q]===i;
+    return `<button class="btn opt ${on?"on":COLORS[i%5]}" data-o="${i}" aria-pressed="${on}"><b>${multi?(on?"✓":""):String.fromCharCode(65+i)}</b>${o}</button>`}).join("")}</div>
+  <div class="row">${q>0||S.edit?`<button class="btn ghost" data-act="back">← ${t.back}</button>`:"<span></span>"}
+  ${multi?`<button class="btn yellow" data-act="done">${t.next} →</button>`:""}</div>`;
+}
+function result(t){
+  const r=pick(),top=r[0],o=order(top);
+  const chips=S.a.map((v,i)=>`<button class="pill" data-edit="${i}">${t.os[i][v]}</button>`).join("")+
+    `<button class="pill" data-edit="6">${S.diet.length?S.diet.map(i=>t.os[6][i]).join(" · "):"＋ "+t.os[6].join(" / ")}</button>`;
+  return `${S.shared?`<div class="panel banner"><span>${t.friend}</span><button class="btn yellow" data-act="retake">${t.mine} →</button></div>`:""}
+  <section class="panel hero"><span class="tag">${t.resT}</span>
+   <div class="zh" lang="zh-Hant">${o.n.zh}</div><div class="py">${o.n.py}</div><div class="en">${local(o.n)}</div>
+   <p class="why">${t.why[S.a[1]]}</p>
+   ${S.diet.length?`<div class="badges">${S.diet.map(i=>`<span>✓ ${t.os[6][i]}</span>`).join("")}</div>`:""}</section>
+  <section class="panel card"><div class="inner"><span class="tag yellow">${t.card}</span>
+   <div class="say" lang="zh-Hant">${o.say}</div><div class="py">${o.py}</div>
+   <dl><dt lang="zh-Hant">${ZH.sweet[S.a[4]]}</dt><dd>${t.os[4][S.a[4]]}</dd>
+   <dt lang="zh-Hant">${ZH.ice[S.a[3]]}</dt><dd>${t.os[3][S.a[3]]}</dd>
+   ${o.hasTop?`<dt lang="zh-Hant">加${ZH.top[S.a[5]]}</dt><dd>${t.os[5][S.a[5]]}</dd>`:""}</dl>
+   <button class="btn teal" data-act="say">🔊 ${t.say}</button></div></section>
+  ${r.length>1?`<section class="panel"><h3>${t.alt}</h3><div class="alts">${r.slice(1).map(d=>{const n=nameOf(d);return `<div><div class="zh" lang="zh-Hant">${n.zh}</div><small><i>${n.py}</i></small><small>${local(n)}</small></div>`}).join("")}</div></section>`:""}
+  <section class="panel brands"><h3>${BR.title[S.lang]}</h3><p class="hint">${BR.lead[S.lang]}</p>
+   <ol class="blist">${BR.list.map((b,i)=>`<li class="${COLORS[i%5]}"><b>${i+1}</b><div><div class="zh" lang="zh-Hant">${b.zh}</div><div class="py">${b.py}${S.lang==="zh"?"":" · "+b.en}</div><p>${b.d[S.lang]}</p>
+   <a class="pill" href="https://www.google.com/maps/search/${encodeURIComponent(b.zh+" "+b.en)}" target="_blank" rel="noopener">${BR.map[S.lang]} ↗</a></div></li>`).join("")}</ol>
+   <p class="hint" style="margin:12px 0 0">${BR.note[S.lang]}</p></section>
+  ${S.shared?"":`<section class="panel"><p class="hint">${t.adj}</p><div class="chips">${chips}</div></section>`}
+  <section class="panel"><h3>${t.howT}</h3>
+   <ol class="steps">${t.steps.map((s,i)=>`<li><b>${i+1}</b>${s}</li>`).join("")}</ol>
+   <h4>${t.steps[1]}</h4><table><tr><td lang="zh-Hant">中杯<small>zhōng bēi</small></td><td>M</td></tr><tr><td lang="zh-Hant">大杯<small>dà bēi</small></td><td>L</td></tr></table>
+   <h4>${t.steps[2]}</h4><table>${ZH.sweet.map((z,i)=>`<tr><td lang="zh-Hant">${z}<small>${ZH.sweetPy[i]}</small></td><td>${t.os[4][i]}</td><td><div class="bar"><i style="width:${ZH.pct[i]}%"></i></div></td></tr>`).join("")}</table>
+   <p class="note">${t.hint}</p>
+   <h4>${t.steps[3]}</h4><table>${ZH.ice.map((z,i)=>`<tr><td lang="zh-Hant">${z}<small>${ZH.icePy[i]}</small></td><td>${t.os[3][i]}</td></tr>`).join("")}</table>
+   <h4 style="margin-top:22px">${t.topT}</h4><table>${ZH.top.map((z,i)=>`<tr><td lang="zh-Hant">${z}<small>${ZH.topPy[i]}</small></td><td><b>${t.os[5][i]}</b><br>${t.tex[i]}</td></tr>`).join("")}</table></section>
+  <section class="panel"><h3>${t.whereT}</h3><div class="shops"><p>${t.chain}</p><p>${t.indie}</p></div>
+   <a class="btn purple" href="https://www.google.com/maps/search/bubble+tea+near+me" target="_blank" rel="noopener">${t.map} ↗</a></section>
+  <div class="sticky"><div><button class="btn red" data-act="share">${t.share}</button><button class="btn" data-act="dl">${t.dl}</button></div></div>`;
+}
+
+function go(view){S.view=view;render();window.scrollTo(0,0)}
+function toast(msg){const el=$("#toast");el.textContent=msg;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1800)}
+function reset(){S.a=[null,null,null,null,null,null];S.diet=[];S.q=0;S.edit=false;S.shared=false;try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}
+function saveCard(){
+  const t=L[S.lang],o=order(pick()[0]),c=document.createElement("canvas");c.width=900;c.height=1100;
+  const x=c.getContext("2d"),F='"Space Grotesk","Microsoft JhengHei","Noto Sans TC",sans-serif';
+  x.fillStyle="#FFF3DC";x.fillRect(0,0,900,1100);
+  x.fillStyle="#161616";x.fillRect(72,72,780,980);
+  x.fillStyle="#FFD84D";x.fillRect(50,50,780,980);x.lineWidth=8;x.strokeStyle="#161616";x.strokeRect(50,50,780,980);
+  x.fillStyle="#161616";x.font="bold 34px "+F;x.fillText(t.card,100,140);
+  x.font="bold 96px "+F;x.fillText(o.n.zh,100,300);
+  x.font="italic 40px "+F;x.fillText(o.n.py,100,365);
+  x.fillRect(100,410,680,6);
+  const rows=[[ZH.sweet[S.a[4]],ZH.sweetPy[S.a[4]]],[ZH.ice[S.a[3]],ZH.icePy[S.a[3]]]];
+  if(o.hasTop)rows.push(["加"+ZH.top[S.a[5]],"jiā "+ZH.topPy[S.a[5]]]);
+  rows.forEach((r,i)=>{x.font="bold 72px "+F;x.fillText(r[0],100,530+i*150);x.font="italic 34px "+F;x.fillText(r[1],100,580+i*150)});
+  x.font="bold 30px "+F;x.fillText("Boba Match",100,985);
+  // Downloads are blocked inside some viewers, so show the image and let the user long-press / right-click to save.
+  $("#cardimg").src=c.toDataURL("image/png");$("#savehint").textContent=SV[S.lang];$("#closebtn").textContent=CL[S.lang];$("#modal").hidden=false;
+}
+const SV={zh:"長按圖片(電腦請按右鍵)即可儲存",en:"Long-press the image (right-click on desktop) to save it",vi:"Nhấn giữ ảnh (nhấn chuột phải trên máy tính) để lưu",th:"กดค้างที่รูป (คลิกขวาบนคอมพิวเตอร์) เพื่อบันทึก",ja:"画像を長押し(PCは右クリック)で保存できます",ko:"이미지를 길게 누르거나(PC는 우클릭) 저장하세요"};
+const CL={zh:"關閉",en:"Close",vi:"Đóng",th:"ปิด",ja:"閉じる",ko:"닫기"};
+
+document.addEventListener("click",ev=>{
+  const b=ev.target.closest("button");if(!b)return;
+  const act=b.dataset.act;
+  if(b.dataset.lang){S.lang=b.dataset.lang;store.set("lang",S.lang);render()}
+  else if(b.dataset.o!==undefined){
+    const i=+b.dataset.o;
+    if(S.q===6){S.diet=S.diet.includes(i)?S.diet.filter(v=>v!==i):[...S.diet,i].sort();render()}
+    else{S.a[S.q]=i;if(S.edit){S.edit=false;go("result")}else{S.q++;render()}}
+  }
+  else if(b.dataset.edit!==undefined){S.edit=true;S.q=+b.dataset.edit;go("quiz")}
+  else if(act==="start"){reset();go("quiz")}
+  else if(act==="retake"){reset();go("quiz")}
+  else if(act==="home"){reset();go("intro")}
+  else if(act==="back"){if(S.edit){S.edit=false;go("result")}else{S.q--;render()}}
+  else if(act==="done"){S.edit=false;go("result")}
+  else if(act==="say"){const u=new SpeechSynthesisUtterance(order(pick()[0]).say);u.lang="zh-TW";u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}
+  else if(act==="dl")saveCard();
+  else if(act==="close")$("#modal").hidden=true;
+  else if(act==="share"){
+    const url=(BASE||location.href.split("#")[0])+"#r-"+S.a.join("")+"-"+S.diet.join(""),t=L[S.lang];
+    if(navigator.share)navigator.share({title:"Boba Match",text:t.tag,url}).catch(()=>{});
+    else if(navigator.clipboard)navigator.clipboard.writeText(url).then(()=>toast(t.copied),()=>toast(url));
+    else toast(url);
+  }
+});
+$("#lang").addEventListener("change",e=>{S.lang=e.target.value;store.set("lang",S.lang);render()});
+render();
+</script>
+</body>
+</html>
